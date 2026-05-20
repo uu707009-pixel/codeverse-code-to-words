@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeVerse Converter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 850px;
+      margin: 50px auto;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 18px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .btn {
+      margin-top: 25px;
+      padding: 16px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #00c6ff;
+      color: black;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: #00ffcc;
+    }
+
+    .app {
+      display: none;
+    }
+
+    label {
+      font-size: 18px;
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 8px;
+    }
+
+    textarea, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 18px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 130px;
+      resize: none;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .encode {
+      background: #4facfe;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .decode {
+      background: #43e97b;
+      color: black;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 15px;
+      background: rgba(255,255,255,0.15);
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 80px;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- HOME SCREEN -->
+    <div id="home" class="center">
+      <h1>CodeVerse Converter</h1>
+      <p>
+        Welcome to CodeVerse Converter — a smart tool that converts words into codes and codes back into words.
+        You can explore A1Z26, Reverse Alphabet, and ASCII encoding systems easily.
+        Perfect for learning, fun decoding, and secret messages.
+      </p>
+      <button class="btn" onclick="startApp()">Get Started</button>
+    </div>
+
+    <!-- APP SCREEN -->
+    <div id="app" class="app">
+      <h1 style="text-align:center;">Converter Tool</h1>
+
+      <label>Select Code Type</label>
+      <select id="codeType">
+        <option value="numbers">A1Z26 (A=1)</option>
+        <option value="reverse">Reverse Alphabet</option>
+        <option value="ascii">ASCII Code</option>
+      </select>
+
+      <label>Enter Text / Code</label>
+      <textarea id="inputText"></textarea>
+
+      <div class="buttons">
+        <button class="encode" onclick="encodeText()">Word → Code</button>
+        <button class="decode" onclick="decodeText()">Code → Word</button>
+      </div>
+
+      <div class="result" id="result">Result will appear here...</div>
+    </div>
+
+  </div>
+
+  <script>
+    function startApp() {
+      document.getElementById('home').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    }
+
+    function encodeText() {
+      const text = document.getElementById('inputText').value.toUpperCase();
+      const type = document.getElementById('codeType').value;
+      let result = [];
+
+      for (let char of text) {
+        if (char >= 'A' && char <= 'Z') {
+          if (type === 'numbers') result.push(char.charCodeAt(0) - 64);
+          else if (type === 'reverse') result.push(27 - (char.charCodeAt(0) - 64));
+          else if (type === 'ascii') result.push(char.charCodeAt(0));
+        } else if (char === ' ') {
+          result.push('/');
+        }
+      }
+
+      document.getElementById('result').innerText = result.join(' ');
+    }
+
+    function decodeText() {
+      const input = document.getElementById('inputText').value.trim();
+      const type = document.getElementById('codeType').value;
+      const parts = input.split(' ');
+      let result = '';
+
+      for (let part of parts) {
+        if (part === '/') result += ' ';
+        else {
+          const num = parseInt(part);
+          if (!isNaN(num)) {
+            if (type === 'numbers') result += String.fromCharCode(num + 64);
+            else if (type === 'reverse') result += String.fromCharCode((27 - num) + 64);
+            else if (type === 'ascii') result += String.fromCharCode(num);
+          }
+        }
+      }
+
+      document.getElementById('result').innerText = result;
+    }
+  </script>
+
+</body>
+</html>
